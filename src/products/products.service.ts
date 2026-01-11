@@ -1,5 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -22,14 +26,34 @@ export class ProductsService {
     });
   }
 
-  update(id: string, data: Prisma.ProductUpdateInput) {
+  async update(id: string, data: Prisma.ProductUpdateInput) {
+    if (!Object.keys(data).length) {
+      throw new BadRequestException('No data provided to update');
+    }
+
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
     return this.prisma.product.update({
       where: { id },
       data,
     });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
     return this.prisma.product.delete({
       where: { id },
     });

@@ -5,12 +5,13 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { env } from '../config/env.config';
+import { Role } from '@prisma/client';
 
 export interface AuthResponse {
   user: {
     id: string;
     email: string;
-    role: string;
+    role: Role;
     createdAt: Date;
   };
   tokens: {
@@ -27,30 +28,38 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const hashed = await bcrypt.hash(dto.password, 10);
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
     const user = await this.usersService.create({
       email: dto.email,
-      password: hashed,
+      password: hashedPassword,
     });
-    const tokens = this.generateTokens(user.id, user.email);
+
+    const tokens = this.generateTokens(user.id, user.email, user.role);
 
     return { user, tokens };
   }
 
   async login(dto: LoginDto): Promise<AuthResponse> {
     const user = await this.usersService.findByEmail(dto.email);
-    const match = await bcrypt.compare(dto.password, user.password);
 
-    if (!match) {
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const tokens = this.generateTokens(user.id, user.email);
+
+    const tokens = this.generateTokens(user.id, user.email, user.role);
 
     return { user, tokens };
   }
 
-  private generateTokens(userId: string, email: string) {
-    const payload = { sub: userId, email };
+  private generateTokens(userId: string, email: string, role: Role) {
+    const payload = {
+      sub: userId,
+      email,
+      role,
+    };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: env.JWT_SECRET,
