@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+  orderItem: any;
   async onModuleInit() {
     await this.$connect();
   }
