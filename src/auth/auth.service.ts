@@ -6,6 +6,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { env } from '../config/env.config';
 import { Role } from '@prisma/client';
+import { SignOptions } from 'jsonwebtoken';
 
 export interface AuthResponse {
   user: {
@@ -53,7 +54,6 @@ export class AuthService {
 
     return { user, tokens };
   }
-
   private generateTokens(userId: string, email: string, role: Role) {
     const payload = {
       sub: userId,
@@ -63,12 +63,12 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(payload, {
       secret: env.JWT_SECRET,
-      expiresIn: env.JWT_EXPIRES_IN,
+      expiresIn: env.JWT_EXPIRES_IN as SignOptions['expiresIn'],
     });
 
     const refreshToken = this.jwtService.sign(payload, {
       secret: env.JWT_REFRESH_SECRET,
-      expiresIn: env.JWT_REFRESH_EXPIRES_IN,
+      expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions['expiresIn'],
     });
 
     return { accessToken, refreshToken };

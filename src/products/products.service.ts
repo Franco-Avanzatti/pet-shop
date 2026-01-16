@@ -44,18 +44,30 @@ export class ProductsService {
       data,
     });
   }
-
   async remove(id: string) {
-    const product = await this.prisma.product.findUnique({
-      where: { id },
-    });
+    console.log('[REFACT-SANSO][PRODUCTS][REMOVE] start', { id });
 
-    if (!product) {
-      throw new NotFoundException('Product not found');
+    try {
+      const deleted = await this.prisma.product.delete({
+        where: { id },
+      });
+
+      console.log('[REFACT-SANSO][PRODUCTS][REMOVE] deleted.ok', { id });
+      return deleted;
+    } catch (error: unknown) {
+      console.log('[REFACT-SANSO][PRODUCTS][REMOVE] deleted.err', {
+        id,
+        error,
+      });
+
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Product not found');
+      }
+
+      throw error;
     }
-
-    return this.prisma.product.delete({
-      where: { id },
-    });
   }
 }
