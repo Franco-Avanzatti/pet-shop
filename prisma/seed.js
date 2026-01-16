@@ -23,8 +23,6 @@ async function main() {
       role: 'USER',
     },
   });
-
-  console.log('✅ Seed completed');
 }
 
 main()

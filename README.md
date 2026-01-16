@@ -1,138 +1,76 @@
-# 🛒 Ecommerce Backend
+# 🐶 Scooby-Doo Petshop – Backend API
 
-Backend de un ecommerce desarrollado con **NestJS**, **Prisma** y **PostgreSQL (Neon)**.  
-Incluye autenticación con **JWT**, manejo de usuarios, productos y carrito de compras, siguiendo buenas prácticas de arquitectura y tipado con TypeScript.
-
----
-
-## 🚀 Tecnologías utilizadas
-
-- **NestJS 11** – Framework backend
-- **TypeScript** – Tipado fuerte
-- **Prisma ORM** – Acceso a datos
-- **PostgreSQL** – Base de datos (Neon)
-- **Passport + JWT** – Autenticación
-- **bcrypt** – Hash de contraseñas
-- **class-validator / class-transformer** – Validación de DTOs
-- **Jest + Supertest** – Testing
-- **ESLint + Prettier** – Calidad de código
+Backend de un **ecommerce Petshop** desarrollado con **NestJS**, **Prisma** y **PostgreSQL (Neon)**.  
+Proyecto pensado para mostrar **arquitectura backend real**, autenticación segura y buenas prácticas.
 
 ---
 
-## 📂 Estructura del proyecto
-
-```
-src/
-├── auth/            # Login, register, JWT strategies
-├── users/           # Usuarios
-├── products/        # Productos
-├── cart/            # Carrito de compras
-├── prisma/          # Prisma service
-├── common/          # Utilidades compartidas
-└── main.ts          # Bootstrap de la app
-```
+## 🚀 Tech Stack
+- NestJS 11 + TypeScript  
+- Prisma ORM  
+- PostgreSQL (Neon)  
+- JWT + Passport  
+- Swagger (OpenAPI)  
+- Docker + Docker Compose  
+- Jest + Supertest  
 
 ---
 
-## ⚙️ Instalación
+## ▶️ Cómo levantar el proyecto (Docker)
 
-### 1️⃣ Clonar el repositorio
+1️⃣ Crear archivo `.env` desde `.env.example`  
+2️⃣ Ejecutar:
 ```bash
-git clone https://github.com/tu-usuario/ecommerce-backend.git
-cd ecommerce-backend
+docker compose up --build
 ```
 
-### 2️⃣ Instalar dependencias
-```bash
-npm install
-```
-
-### 3️⃣ Configurar variables de entorno
-
-Crear un archivo `.env` en la raíz:
-
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DB?sslmode=require"
-JWT_SECRET="supersecretjwt"
-```
-
----
-
-## 🧬 Prisma
-
-### Generar cliente
-```bash
-npx prisma generate
-```
-
-### Ejecutar migraciones
-```bash
-npx prisma migrate dev
-```
-
----
-
-## ▶️ Ejecutar el proyecto
-
-### Desarrollo
-```bash
-npm run start:dev
-```
-
-### Producción
-```bash
-npm run build
-npm run start:prod
-```
-
----
-
-## 🧪 Testing
-
-```bash
-npm run test
-npm run test:watch
-npm run test:cov
-```
+📍 API: http://localhost:3001  
+📚 Swagger: http://localhost:3001/api/docs  
 
 ---
 
 ## 🔐 Autenticación
-
-- Autenticación basada en **JWT**
-- Estrategias:
-  - `local` (login)
-  - `jwt` (rutas protegidas)
-- El usuario autenticado se obtiene desde `req.user.sub`
+- JWT con access & refresh token  
+- Tokens también enviados como cookies httpOnly  
+- Roles: `USER` y `ADMIN`  
 
 ---
 
-## 🛒 Funcionalidades principales
+## 👤 Usuarios de prueba
 
-### Productos
-- Crear, listar, obtener, actualizar y eliminar productos
+### Admin
+- Email: **admin@demo.com**
+- Password: **Admin123**
 
-### Carrito
-- Obtener carrito del usuario autenticado
-- Agregar productos
-- Actualizar cantidades
-- Evita duplicados usando clave compuesta (`cartId + productId`)
+### User
+- Email: **user@demo.com**
+- Password: **User123**
 
-### Usuarios
-- Registro y login
-- Roles (`USER`, `ADMIN`)
+(Se crean con seed de Prisma)
 
 ---
 
-## 📌 Scripts disponibles
+## 🛒 Funcionalidades
+- Auth (login / register)
+- Productos (CRUD – protegido por roles)
+- Carrito por usuario
+- Pedidos
+- Validaciones con DTOs
+- API documentada con Swagger
 
-| Script | Descripción |
-|------|------------|
-| `start:dev` | Modo desarrollo |
-| `build` | Compilar proyecto |
-| `start:prod` | Ejecutar build |
-| `lint` | ESLint |
-| `format` | Prettier |
-| `test` | Tests unitarios |
+---
+
+## 🧪 Testing
+```bash
+npm run testt:e2e
+```
+
+---
+
+## 🧠 Arquitectura
+- Modular (NestJS best practices)
+- Tipado estricto (sin `any`)
+- Prisma como capa de datos
+- Pensado para escalar
 
 ---

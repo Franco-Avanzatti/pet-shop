@@ -45,14 +45,11 @@ export class ProductsService {
     });
   }
   async remove(id: string) {
-    console.log('[REFACT-SANSO][PRODUCTS][REMOVE] start', { id });
-
     try {
       const deleted = await this.prisma.product.delete({
         where: { id },
       });
 
-      console.log('[REFACT-SANSO][PRODUCTS][REMOVE] deleted.ok', { id });
       return deleted;
     } catch (error: unknown) {
       console.log('[REFACT-SANSO][PRODUCTS][REMOVE] deleted.err', {
