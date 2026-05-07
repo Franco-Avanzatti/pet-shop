@@ -51,15 +51,15 @@ describe('Products (e2e)', () => {
     const res = await request(server)
       .post('/api/products')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Test Product',
-        description: 'desc',
-        image: 'img',
-        category: 'FOOD',
-        price: 100,
-        stock: 10,
-      })
+      .field('name', 'Test Product')
+      .field('description', 'desc')
+      .field('category', 'FOOD')
+      .field('price', '100')
+      .field('stock', '10')
       .expect(201);
+
+    console.log('STATUS:', res.status);
+    console.log('BODY:', res.body);
 
     const body: ProductResponse = res.body as ProductResponse;
     productId = body.id;

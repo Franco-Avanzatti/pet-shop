@@ -26,6 +26,7 @@ model Product {
   image       String
   stock       Int
   category    String
+  isOnSale    Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -54,18 +54,14 @@ describe('Cart (e2e)', () => {
     const productRes = await request(server)
       .post('/api/products')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Cart Product',
-        description: 'desc',
-        image: 'img',
-        category: 'FOOD',
-        price: 100,
-        stock: 10,
-      })
+      .field('name', 'Cart Product')
+      .field('description', 'desc')
+      .field('category', 'FOOD')
+      .field('price', '100')
+      .field('stock', '10')
       .expect(201);
 
-    const productBody = productRes.body as ProductResponse;
-    productId = productBody.id;
+    productId = (productRes.body as ProductResponse).id;
   });
 
   afterAll(async () => {

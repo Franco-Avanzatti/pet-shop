@@ -1,10 +1,22 @@
-import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
+
+  // ✅ CORS para permitir frontend Next
+  app.enableCors({
+    origin: 'http://localhost:3001',
+    credentials: true,
+  });
 
   app.setGlobalPrefix('api');
 
