@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma, Cart } from '@prisma/client';
 
@@ -19,6 +23,14 @@ export class CartService {
 
   async addItem(userId: string, dto: { productId: string; quantity: number }) {
     const { productId, quantity } = dto;
+
+    const userExists = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
     let cart: Cart | null;
 
@@ -90,16 +102,20 @@ export class CartService {
     });
   }
 
-  async removeItem(userId: string, itemId: string) {
+  async removeItem(userId: string, productId: string) {
+    const cart = await this.prisma.cart.findUnique({ where: { userId } });
+
+    if (!cart) return { message: 'Cart not found' };
+
     const deleted = await this.prisma.cartItem.deleteMany({
       where: {
-        id: itemId,
-        cart: { userId },
+        cartId: cart.id,
+        productId,
       },
     });
 
     if (deleted.count === 0) {
-      return { message: 'Item already removed' };
+      return { message: 'Item not found in cart' };
     }
 
     return { message: 'Item removed' };

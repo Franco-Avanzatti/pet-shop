@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Req, Body, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -8,11 +8,10 @@ import {
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 interface JwtRequest extends Request {
-  user: {
-    id: string;
-  };
+  user: { id: string };
 }
 
 @ApiTags('Orders')
@@ -24,29 +23,14 @@ export class OrdersController {
 
   @Post()
   @ApiOperation({ summary: 'Create order from current cart' })
-  @ApiResponse({
-    status: 201,
-    description: 'Order created successfully',
-    schema: {
-      example: {
-        id: 'uuid',
-        userId: 'uuid',
-        total: 15000,
-        status: 'PENDING',
-        createdAt: '2026-01-12T12:00:00.000Z',
-      },
-    },
-  })
-  create(@Req() req: JwtRequest) {
-    return this.service.create(req.user.id);
+  @ApiResponse({ status: 201, description: 'Order created successfully' })
+  create(@Req() req: JwtRequest, @Body() dto: CreateOrderDto) {
+    return this.service.create(req.user.id, dto);
   }
 
   @Get('me')
   @ApiOperation({ summary: 'Get orders of current user' })
-  @ApiResponse({
-    status: 200,
-    description: 'User orders retrieved',
-  })
+  @ApiResponse({ status: 200, description: 'User orders retrieved' })
   findMyOrders(@Req() req: JwtRequest) {
     return this.service.findByUser(req.user.id);
   }

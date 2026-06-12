@@ -53,19 +53,19 @@ export class CartController {
   }
 
   // 🗑️ DELETE ITEM BY CartItem ID
-  @Delete('items/:id')
-  @ApiOperation({ summary: 'Remove item from cart by cartItemId' })
+  @Delete('items/:productId')
+  @ApiOperation({ summary: 'Remove item from cart by productId' })
   @ApiParam({
-    name: 'id',
-    description: 'CartItem ID',
-    example: 'c1b2a3d4-1234-4abc-9def-123456789abc',
+    name: 'productId',
+    description: 'Product ID to remove from cart',
+    example: 'a3f6d1b2-1234-4bcd-9abc-123456789abc',
   })
   @ApiResponse({ status: 200, description: 'Cart item removed' })
   removeItem(
     @Req() req: { user: { id: string } },
-    @Param('id') cartItemId: string,
+    @Param('productId') productId: string,
   ) {
-    return this.service.removeItem(req.user.id, cartItemId);
+    return this.service.removeItem(req.user.id, productId);
   }
 
   // 🧹 CLEAR ENTIRE CART

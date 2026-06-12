@@ -71,6 +71,26 @@ export class AuthController {
     };
   }
 
+  @Post('logout')
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully logged out',
+  })
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken', {
+      path: '/',
+    });
+
+    res.clearCookie('refreshToken', {
+      path: '/',
+    });
+
+    return {
+      message: 'Logged out',
+    };
+  }
+
   private setCookies(
     res: Response,
     tokens: { accessToken: string; refreshToken: string },

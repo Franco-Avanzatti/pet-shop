@@ -7,7 +7,7 @@ export class UpdateCartItemDto {
     example: 'a3f6d1b2-1234-4bcd-9abc-123456789abc',
   })
   @IsUUID()
-  productId: string;
+  productId!: string;
 
   @ApiProperty({
     description: 'New quantity (must be >= 1)',
@@ -16,5 +16,5 @@ export class UpdateCartItemDto {
   })
   @IsInt()
   @Min(1)
-  quantity: number;
+  quantity!: number;
 }

@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { MailService } from '../mail/mail.service';
 import { env } from '../config/env.config';
 import { Role } from '@prisma/client';
 import { SignOptions } from 'jsonwebtoken';
@@ -26,6 +27,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -37,6 +39,9 @@ export class AuthService {
     });
 
     const tokens = this.generateTokens(user.id, user.email, user.role);
+
+    // Sin await — el mail se manda en segundo plano sin retrasar la respuesta
+    void this.mailService.sendWelcome(user.email);
 
     return { user, tokens };
   }

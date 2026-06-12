@@ -31,6 +31,7 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   cartItems CartItem[]
+  orderItems OrderItem[]
 }
 
 model Cart {
@@ -57,9 +58,22 @@ model Order {
   userId    String
   total     Float
   status    OrderStatus @default(PENDING)
+  shippingAddress Json
   createdAt DateTime    @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user   User        @relation(fields: [userId], references: [id])
+  items  OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 enum Role {
